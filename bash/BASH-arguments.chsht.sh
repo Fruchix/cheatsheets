@@ -9,7 +9,7 @@ POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
     opt="$1";
     shift;
-    # we could not use any double quotes
+    # we could remove double quotes
     case "$opt" in
         "--" ) break 2;;
         "-" ) break 2;;
@@ -30,7 +30,7 @@ while [[ $# -gt 0 ]]; do
             exit 1
             ;;
         *)
-            POSITIONAL_ARGS+=("$1") # save positional arg
+            POSITIONAL_ARGS+=("$opt") # save positional arg
             ;;
    esac
 done
