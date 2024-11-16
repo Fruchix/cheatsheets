@@ -5,6 +5,7 @@
 # https://stackoverflow.com/a/14203146
 
 POSITIONAL_ARGS=()
+POSITIONAL_ARGS_FOR_OPTION_S=()
 
 while [[ $# -gt 0 ]]; do
     opt="$1";
@@ -25,12 +26,20 @@ while [[ $# -gt 0 ]]; do
         "-d"|"--doesnt_require_value" )
             MODE=1
             ;;
+        "-s"|"--set-of-positional-values" )
+            # read all positional arguments after the named argument itself, 
+            # until the next named argument argument
+            while (( "$#" >= 1 )) && ! [[ $1 = -* ]]; do
+                POSITIONAL_ARGS_FOR_OPTION_S+=( "$1" )
+                shift
+            done
+            ;;
         -*|--*)
             echo >&2 "Invalid option: $opt"
             exit 1
             ;;
         *)
-            POSITIONAL_ARGS+=("$opt") # save positional arg
+            POSITIONAL_ARGS+=("$opt") # save positional arg that do not depend on a specific named arg
             ;;
    esac
 done
