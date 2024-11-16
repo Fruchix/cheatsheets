@@ -1,0 +1,22 @@
+#!/bin/bash
+
+search_option="KEYWORDS: .*"
+
+if [[ "$#" -gt 0 ]]; then
+    search_option="${search_option}("
+fi
+
+read -a list_deps <<< "${1}"
+
+for k in "${list_deps[@]}"; do
+    search_option="${search_option}${k}|"
+done
+
+search_option=${search_option%"|"}
+
+if [[ "$#" -gt 0 ]]; then
+    search_option="${search_option})"
+fi
+
+# echo "grep -l -r -E ${search_option} --include=\*.chsht.\*"
+grep -l -r -E "${search_option}" --include=\*.chsht.\*

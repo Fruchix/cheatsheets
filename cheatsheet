@@ -1,0 +1,7 @@
+#!/bin/bash
+
+INITIAL_QUERY="$*"
+
+_cheatsheet_search "$@" | fzf --disabled --ansi \
+    --bind='change:reload(_cheatsheet_search {q})'\
+    --bind='focus:change-preview(bat --color=always  {})'
