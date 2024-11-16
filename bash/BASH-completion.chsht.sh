@@ -1,4 +1,6 @@
-# KEYWORDS: completion script 
+#!/bin/bash
+
+# KEYWORDS: completion script
 
 # REFERENCES:
 # https://askubuntu.com/questions/68175/how-to-create-script-with-auto-complete

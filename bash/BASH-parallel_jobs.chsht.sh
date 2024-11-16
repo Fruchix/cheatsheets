@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # KEYWORDS: bash for loop parallel ctrl c ctrl-c trap pids background process
 
 # REFERENCES:

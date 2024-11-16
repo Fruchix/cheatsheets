@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # KEYWORDS: read arduments stdout parse positional
 
 # REFERENCES:
