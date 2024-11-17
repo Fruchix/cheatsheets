@@ -1,22 +1,33 @@
 #!/bin/bash
 
-search_option="KEYWORDS: .*"
+declare -A results
 
-if [[ "$#" -gt 0 ]]; then
-    search_option="${search_option}("
-fi
+read -a keywords <<< "${1}"
 
-read -a list_deps <<< "${1}"
-
-for k in "${list_deps[@]}"; do
-    search_option="${search_option}${k}|"
+for k in "${keywords[@]}" ""; do
+    cur_results=( $(grep -l -r -E "KEYWORDS: .*${k}" --include=\*.chsht.\*) )
+    
+    for r in "${cur_results[@]}"; do
+        if [[ ! -v results["${r}"] ]] ; then
+            results["${r}"]=0
+        else
+            results["${r}"]=$(( ${results["${r}"]} + 1 ))
+        fi
+    done
 done
 
-search_option=${search_option%"|"}
+max=0
+for key in "${!results[@]}"; do
+    if [[ $max -lt ${results["${key}"]} ]]; then
+        max=${results["${key}"]}
+    fi
+done
 
-if [[ "$#" -gt 0 ]]; then
-    search_option="${search_option})"
-fi
+for key in "${!results[@]}"; do
+    if [[ ${results["${key}"]} -eq $max  ]]; then
+        echo "$key"
+    fi
+done
 
 # echo "grep -l -r -E ${search_option} --include=\*.chsht.\*"
-grep -l -r -E "${search_option}" --include=\*.chsht.\*
+# grep -l -r -E "${search_option}" --include=\*.chsht.\*

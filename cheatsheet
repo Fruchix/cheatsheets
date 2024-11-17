@@ -1,5 +1,11 @@
 #!/bin/bash
 
-_cheatsheet_search "$@" | fzf --disabled --ansi \
+_cheatsheet_search "$@" | fzf --preview-window=right,70% --disabled --ansi \
     --bind='change:reload(_cheatsheet_search {q})'\
-    --bind='focus:change-preview(bat --color=always  {})'
+    --bind='focus:change-preview(bat --color=always  {})'\
+    --bind='enter:become(bat --color=always  {}; echo {})'
+
+# _cheatsheet_search "$@" | fzf-tmux --height 70% --preview-window=down,80% --disabled --ansi \
+    # --bind='change:reload(_cheatsheet_search {q})'\
+    # --bind='focus:change-preview(bat --color=always  {})'\
+    # --bind='enter:become(bat --color=always  {}; echo -n -E {} )'
