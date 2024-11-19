@@ -5,9 +5,19 @@ declare -A results
 read -a keywords <<< "${1}"
 
 for k in "${keywords[@]}" ""; do
-    cur_results=( $(grep -l -r -E "KEYWORDS: .*${k}" --include=\*.chsht.\*) )
-    
-    for r in "${cur_results[@]}"; do
+    content_results=( $(grep -l -r -E "KEYWORDS: .*${k}" --include=\*.chsht.\*) )
+
+    filename_results=( $(find . -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
+
+    i=0
+    for r in "${content_results[@]}" "${filename_results[@]}"; do
+        # if keyword was found in both filename and file content,
+        # do not add it to the results
+        if [[ "$i" -lt "${#content_results[@]}" && "${filename_results[*]}" =~ ${r} ]]; then
+            i=$(( i + 1))
+            continue
+        fi
+
         if [[ ! -v results["${r}"] ]] ; then
             results["${r}"]=0
         else
@@ -15,6 +25,8 @@ for k in "${keywords[@]}" ""; do
         fi
     done
 done
+
+# only print the results containing the maximum keywords
 
 max=0
 for key in "${!results[@]}"; do
