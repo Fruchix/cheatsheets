@@ -1,10 +1,26 @@
 #!/bin/bash
 
+print_hline()
+{
+    local char="$1" times="$2"
+
+    for ((i=0;i<=times;i++)); do 
+        echo -n "${char}"
+    done
+    echo
+}
+
+print_delimiter()
+{
+    local filename="$1"
+    print_hline "─" ${#filename}
+    echo "${filename}"
+    print_hline "─" ${#filename}
+}
+
 filename="$@"
 
-echo "-------------------------------------------------------------------------"
-echo "${filename}"
-echo "-------------------------------------------------------------------------"
+print_delimiter "${filename}"
 
 if [[ $(tput lines) -ge $(wc -l < "${filename}") ]]; then
     bat --color=always "${filename}"
@@ -12,6 +28,4 @@ else
     cat "${filename}"
 fi
 
-echo "-------------------------------------------------------------------------"
-echo "${filename}"
-echo "-------------------------------------------------------------------------"
+print_delimiter "${filename}"
