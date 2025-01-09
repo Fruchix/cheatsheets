@@ -42,10 +42,13 @@ main() {
 
         mkdir "${bash_bible_dir}/${chapter_title}" && echo "Created folder ${bash_bible_dir}/${chapter_title,,}/"
 
+        # the name of the cheatsheet
+        output=""
+
         # parse the chapter in different cheatsheets : each title of level "##" will result in its own cheatsheet
         while IFS=$'\n' read -r line; do
-            # ignore primary title
-            if [[ $line =~ ^"# " ]]; then
+            # do not add the title to the cheatsheet
+            if [[ ${line,,} == *"${chapter_title}"* ]]; then
                 continue
             fi
 
