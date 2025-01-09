@@ -11,13 +11,13 @@
 # this script has been modified, the original is https://github.com/dylanaraps/pure-bash-bible/blob/master/build.sh
 
 word_separator="_"
-
+bash_bible_dir="bash-bible"
 
 main() {
     local chapter_title char output line i j
 
-    if [[ ! -f README.md ]]; then
-        wget -O- https://raw.githubusercontent.com/dylanaraps/pure-bash-bible/refs/heads/master/README.md
+    if [[ ! -f README-bash-bible.md ]]; then
+        wget -O "" https://raw.githubusercontent.com/dylanaraps/pure-bash-bible/refs/heads/master/README.md
     fi
 
     # Split the README.md into chapters based on markers.
@@ -25,7 +25,9 @@ main() {
         [[ "$chap" ]] && chapter[$i]+="$line"$'\n'
         [[ "$line" == "<!-- CHAPTER START -->" ]] && chap=1
         [[ "$line" == "<!-- CHAPTER END -->" ]]   && { chap=; ((i++)); }
-    done < README.md
+    done < README-bash-bible.md
+
+    rm README-bash-bible.md
 
     # Write the chapters to separate files.
     for i in "${!chapter[@]}"; do
@@ -35,7 +37,7 @@ main() {
         chapter_title=$(echo "${chapter[$i]}" | head -2 | grep -e "^# " | cut -d " " -f2- | tr " " "${word_separator}")
         chapter_title="${chapter_title,,}"
 
-        mkdir "${chapter_title}" && echo "Created folder ${chapter_title,,}/"
+        mkdir "${bash_bible_dir}/${chapter_title}" && echo "Created folder ${bash_bible_dir}/${chapter_title,,}/"
 
         # parse the chapter in different cheatsheets : each title of level "##" will result in its own cheatsheet
         while IFS=$'\n' read -r line; do
@@ -48,10 +50,10 @@ main() {
             if [[ $line =~ ^"## " ]]; then
                 # if pandoc is installed, convert the last cheatsheet (before this new title) to text (from markdown)
                 if [[ $(command -v pandoc) && -n ${output} ]]; then
-                    pandoc -f markdown -t plain "${chapter_title}/${output}.tmp" -o "${chapter_title}/${output}.chsht.sh" && {
-                        echo "Added ${chapter_title}/${output}.chsht.sh"
+                    pandoc -f markdown -t plain "${bash_bible_dir}/${chapter_title}/${output}.tmp" -o "${bash_bible_dir}/${chapter_title}/${output}.chsht.sh" && {
+                        echo "Added ${bash_bible_dir}/${chapter_title}/${output}.chsht.sh"
                     }
-                    rm "${chapter_title}/${output}.tmp" && echo "Removed ${chapter_title}/${output}.tmp"
+                    rm "${bash_bible_dir}/${chapter_title}/${output}.tmp" && echo "Removed ${bash_bible_dir}/${chapter_title}/${output}.tmp"
                 fi
 
                 output=""
@@ -71,21 +73,21 @@ main() {
                     fi
                 done
 
-                echo "#!/usr/bin/env bash" > "${chapter_title}/${output}.tmp" && echo "Added ${chapter_title}/${output}.tmp"
+                echo "#!/usr/bin/env bash" > "${bash_bible_dir}/${chapter_title}/${output}.tmp" && echo "Added ${bash_bible_dir}/${chapter_title}/${output}.tmp"
                 continue
             fi
 
             if [[ -n ${output} ]]; then
-                echo "${line}" >> "${chapter_title}/${output}.tmp"
+                echo "${line}" >> "${bash_bible_dir}/${chapter_title}/${output}.tmp"
             fi
         done <<< "${chapter[$i]}"
 
         # if pandoc is installed, convert the last cheatsheet (before the end of file) to text (from markdown)
         if [[ $(command -v pandoc) && -n ${output} ]]; then
-            pandoc -f markdown -t plain "${chapter_title}/${output}.tmp" -o "${chapter_title}/${output}.chsht.sh" && {
-                echo "Added ${chapter_title}/${output}.chsht.sh"
+            pandoc -f markdown -t plain "${bash_bible_dir}/${chapter_title}/${output}.tmp" -o "${bash_bible_dir}/${chapter_title}/${output}.chsht.sh" && {
+                echo "Added ${bash_bible_dir}/${chapter_title}/${output}.chsht.sh"
             }
-            rm "${chapter_title}/${output}.tmp" && echo "Removed ${chapter_title}/${output}.tmp"
+            rm "${bash_bible_dir}/${chapter_title}/${output}.tmp" && echo "Removed ${bash_bible_dir}/${chapter_title}/${output}.tmp"
         fi
     done
 }
