@@ -56,8 +56,8 @@ main() {
             if [[ $line =~ ^"## " ]]; then
                 # if pandoc is installed, convert the last cheatsheet (before this new title) to text (from markdown)
                 if [[ $(command -v pandoc) && -n ${output} ]]; then
-                    pandoc -f markdown -t plain "${bash_bible_dir}/${chapter_title}/${output}.tmp" -o "${bash_bible_dir}/${chapter_title}/${output}.chsht.sh" && {
-                        echo "Added ${bash_bible_dir}/${chapter_title}/${output}.chsht.sh"
+                    pandoc -f markdown -t plain "${bash_bible_dir}/${chapter_title}/${output}.tmp" -o "${bash_bible_dir}/${chapter_title}/BASH-${output}.chsht.sh" && {
+                        echo "Added ${bash_bible_dir}/${chapter_title}/BASH-${output}.chsht.sh"
                     }
                     rm "${bash_bible_dir}/${chapter_title}/${output}.tmp" && echo "Removed ${bash_bible_dir}/${chapter_title}/${output}.tmp"
                 fi
@@ -90,8 +90,8 @@ main() {
 
         # if pandoc is installed, convert the last cheatsheet (before the end of file) to text (from markdown)
         if [[ $(command -v pandoc) && -n ${output} ]]; then
-            pandoc -f markdown -t plain "${bash_bible_dir}/${chapter_title}/${output}.tmp" -o "${bash_bible_dir}/${chapter_title}/${output}.chsht.sh" && {
-                echo "Added ${bash_bible_dir}/${chapter_title}/${output}.chsht.sh"
+            pandoc -f markdown -t plain "${bash_bible_dir}/${chapter_title}/${output}.tmp" -o "${bash_bible_dir}/${chapter_title}/BASH-${output}.chsht.sh" && {
+                echo "Added ${bash_bible_dir}/${chapter_title}/BASH-${output}.chsht.sh"
             }
             rm "${bash_bible_dir}/${chapter_title}/${output}.tmp" && echo "Removed ${bash_bible_dir}/${chapter_title}/${output}.tmp"
         fi
