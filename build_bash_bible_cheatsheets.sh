@@ -16,8 +16,11 @@ bash_bible_dir="bash-bible"
 main() {
     local chapter_title char output line i j
 
+    rm -r "${bash_bible_dir}"
+    mkdir -p "${bash_bible_dir}"
+
     if [[ ! -f README-bash-bible.md ]]; then
-        wget -O "" https://raw.githubusercontent.com/dylanaraps/pure-bash-bible/refs/heads/master/README.md
+        wget -O "README-bash-bible.md" https://raw.githubusercontent.com/dylanaraps/pure-bash-bible/refs/heads/master/README.md
     fi
 
     # Split the README.md into chapters based on markers.
