@@ -10,8 +10,11 @@
 
 # this script has been modified, the original is https://github.com/dylanaraps/pure-bash-bible/blob/master/build.sh
 
+word_separator="_"
 
 main() {
+    local chapter_title char output line i j
+
     if [[ ! -f README.md ]]; then
         wget https://raw.githubusercontent.com/dylanaraps/pure-bash-bible/refs/heads/master/README.md
     fi
@@ -23,19 +26,66 @@ main() {
         [[ "$line" == "<!-- CHAPTER END -->" ]]   && { chap=; ((i++)); }
     done < README.md
 
-    local chapter_title
-
     # Write the chapters to separate files.
     for i in "${!chapter[@]}"; do
         : "${chapter[$i]/$'\n'*}"; : "${_/\# }"; : "${_,,}"
         
         # the chapter's title is not always on the first line
-        chapter_title=$(echo "${chapter[$i]}" | head -2 | grep -e "^# " | cut -d " " -f2- | tr " " "-")
-        echo "mkdir ${chapter_title,,}/"
-        echo "touch"
+        chapter_title=$(echo "${chapter[$i]}" | head -2 | grep -e "^# " | cut -d " " -f2- | tr " " "${word_separator}")
+        chapter_title="${chapter_title,,}"
 
-        # printf '%s\n' "${chapter[$i]}" > "manuscript/chapter${i}.txt"
-        # printf '%s\n' "chapter${i}.txt" >> "manuscript/Book.txt"
+        mkdir "${chapter_title}" && echo "Created folder ${chapter_title,,}/"
+
+        # parse the chapter in different cheatsheets : each title of level "##" will result in its own cheatsheet
+        while IFS=$'\n' read -r line; do
+            # ignore primary title
+            if [[ $line =~ ^"# " ]]; then
+                continue
+            fi
+
+            # get the name of the cheatsheet from the title
+            if [[ $line =~ ^"## " ]]; then
+                # if pandoc is installed, convert the last cheatsheet (before this new title) to text (from markdown)
+                if [[ $(command -v pandoc) && -n ${output} ]]; then
+                    pandoc -f markdown -t plain "${chapter_title}/${output}.tmp" -o "${chapter_title}/${output}.chsht.sh" && {
+                        echo "Added ${chapter_title}/${output}.chsht.sh"
+                    }
+                    rm "${chapter_title}/${output}.tmp" && echo "Removed ${chapter_title}/${output}.tmp"
+                fi
+
+                output=""
+                char=""
+                # build the name of the cheatsheet from the title
+                for (( j=0; j<${#line}; j++ )); do
+                    line="${line#"## "}"
+                    line="${line,,}"
+
+                    char="${line:$j:1}"
+
+                    # remove all non ascii characters and replace spaces by a defined separator
+                    if [[ "$char" =~ [a-z0-9] ]]; then
+                        output="$output$char"
+                    elif [[ "$char" == " " ]]; then
+                        output="${output}${word_separator}"
+                    fi
+                done
+
+                echo "#!/usr/bin/env bash" > "${chapter_title}/${output}.tmp" && echo "Added ${chapter_title}/${output}.tmp"
+                continue
+            fi
+
+            if [[ -n ${output} ]]; then
+                echo "${line}" >> "${chapter_title}/${output}.tmp"
+            fi
+        done <<< "${chapter[$i]}"
+
+        # if pandoc is installed, convert the last cheatsheet (before the end of file) to text (from markdown)
+        if [[ $(command -v pandoc) && -n ${output} ]]; then
+            pandoc -f markdown -t plain "${chapter_title}/${output}.tmp" -o "${chapter_title}/${output}.chsht.sh" && {
+                echo "Added ${chapter_title}/${output}.chsht.sh"
+            }
+            rm "${chapter_title}/${output}.tmp" && echo "Removed ${chapter_title}/${output}.tmp"
+        fi
     done
 }
 
