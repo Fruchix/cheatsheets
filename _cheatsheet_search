@@ -1,15 +1,26 @@
 #!/bin/bash
 
+# associative array that will keep track of file scores
+# when a keyword matches a file (either in name or "KEYWORD" content), the file's score is increased
 declare -A results
 
 read -a keywords <<< "${1}"
 
+# check which files match each keyword and increment their score
 for k in "${keywords[@]}" ""; do
+    # search for keyword "k" in the "KEYWORDS" line of each cheatsheet
+    # result: array of file names that matches this keyword
     content_results=( $(grep -l -r -E "KEYWORDS: .*${k}" --include=\*.chsht.\*) )
 
+    # also search for keyword "k" in the name of the cheatsheet
+    # result: array of file names that matches this keyword
+    # the last part of the command removes the leading "./" before each result
     filename_results=( $(find . -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
 
+    # index of the content's results
     i=0
+
+    # for each file matched, increment its "score" in the global search
     for r in "${content_results[@]}" "${filename_results[@]}"; do
         # if keyword was found in both filename and file content,
         # do not add it to the results
@@ -18,6 +29,7 @@ for k in "${keywords[@]}" ""; do
             continue
         fi
 
+        # update the current result's score (file's score)
         if [[ ! -v results["${r}"] ]] ; then
             results["${r}"]=0
         else
