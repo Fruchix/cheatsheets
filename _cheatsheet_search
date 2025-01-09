@@ -1,23 +1,42 @@
 #!/bin/bash
 
+INCLUDE_BASH_BIBLE=${INCLUDE_BASH_BIBLE:=no}
+
 CHEATSHEETS_DIR=$(dirname "$0")
 
 # associative array that will keep track of file scores
 # when a keyword matches a file (either in name or "KEYWORD" content), the file's score is increased
 declare -A results
 
+# shellcheck disable=SC2162
 read -a keywords <<< "${1}"
 
 # check which files match each keyword and increment their score
 for k in "${keywords[@]}" ""; do
+    FIND_EXCLUDE=""
+    GREP_EXCLUDE=""
+
+    if [[ "${INCLUDE_BASH_BIBLE}" != "yes" ]]; then
+        FIND_EXCLUDE="${FIND_EXCLUDE} -path ${CHEATSHEETS_DIR}/bash-bible -prune"
+        GREP_EXCLUDE="${GREP_EXCLUDE} --exclude-dir=bash-bible"
+    fi
+    
     # search for keyword "k" in the "KEYWORDS" line of each cheatsheet
     # result: array of file names that matches this keyword
-    content_results=( $(grep -l -r -E "KEYWORDS: .*${k}" --include=\*.chsht.\* ${CHEATSHEETS_DIR}) )
+    # shellcheck disable=SC2207,SC2086
+    content_results=( $(grep -l -r -E "KEYWORDS: .*${k}" --include=\*.chsht.\* ${GREP_EXCLUDE} ${CHEATSHEETS_DIR}) )
 
     # also search for keyword "k" in the name of the cheatsheet
     # result: array of file names that matches this keyword
     # the last part of the command removes the leading "./" before each result
-    filename_results=( $(find ${CHEATSHEETS_DIR} -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
+
+    if [[ -z "${FIND_EXCLUDE}" ]]; then
+        # shellcheck disable=SC2207,SC2086
+        filename_results=( $(find ${CHEATSHEETS_DIR} -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
+    else
+        # shellcheck disable=SC2207,SC2086
+        filename_results=( $(find ${CHEATSHEETS_DIR} \( ${FIND_EXCLUDE} \) -o -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
+    fi
 
     # index of the content's results
     i=0
