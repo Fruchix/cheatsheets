@@ -12,11 +12,12 @@
 
 word_separator="_"
 
+
 main() {
     local chapter_title char output line i j
 
     if [[ ! -f README.md ]]; then
-        wget https://raw.githubusercontent.com/dylanaraps/pure-bash-bible/refs/heads/master/README.md
+        wget -O- https://raw.githubusercontent.com/dylanaraps/pure-bash-bible/refs/heads/master/README.md
     fi
 
     # Split the README.md into chapters based on markers.
