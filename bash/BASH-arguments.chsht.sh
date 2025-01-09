@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# KEYWORDS: read arduments stdout parse positional
+# KEYWORDS: read arguments stdout parse positional script
 
 # REFERENCES:
 # https://stackoverflow.com/a/14063511
