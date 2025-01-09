@@ -1,5 +1,7 @@
 #!/bin/bash
 
+CHEATSHEETS_DIR=$(dirname "$0")
+
 # associative array that will keep track of file scores
 # when a keyword matches a file (either in name or "KEYWORD" content), the file's score is increased
 declare -A results
@@ -10,12 +12,12 @@ read -a keywords <<< "${1}"
 for k in "${keywords[@]}" ""; do
     # search for keyword "k" in the "KEYWORDS" line of each cheatsheet
     # result: array of file names that matches this keyword
-    content_results=( $(grep -l -r -E "KEYWORDS: .*${k}" --include=\*.chsht.\*) )
+    content_results=( $(grep -l -r -E "KEYWORDS: .*${k}" --include=\*.chsht.\* ${CHEATSHEETS_DIR}) )
 
     # also search for keyword "k" in the name of the cheatsheet
     # result: array of file names that matches this keyword
     # the last part of the command removes the leading "./" before each result
-    filename_results=( $(find . -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
+    filename_results=( $(find ${CHEATSHEETS_DIR} -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
 
     # index of the content's results
     i=0
@@ -49,7 +51,7 @@ done
 
 for key in "${!results[@]}"; do
     if [[ ${results["${key}"]} -eq $max  ]]; then
-        echo "$key"
+        basename "$key"
     fi
 done
 
