@@ -1,5 +1,16 @@
 #!/bin/bash
 
+remove_array_dups() {
+    # Usage: remove_array_dups "array"
+    declare -A tmp_array
+
+    for i in "$@"; do
+        [[ $i ]] && IFS=" " tmp_array["${i:- }"]=1
+    done
+
+    printf '%s\n' "${!tmp_array[@]}"
+}
+
 INCLUDE_BASH_BIBLE=${INCLUDE_BASH_BIBLE:=no}
 
 CHEATSHEETS_DIR=$(dirname "$0")
@@ -43,25 +54,22 @@ for k in "${keywords[@]}" ; do
     # the last part of the command removes the leading "./" before each result
 
     if [[ -z "${FIND_EXCLUDE}" ]]; then
+        # search in the file names
         # shellcheck disable=SC2207,SC2086
         filename_results=( $(find ${CHEATSHEETS_DIR} -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
+        # shellcheck disable=SC2207,SC2086
+        foldername_results=( $(find ${CHEATSHEETS_DIR} -path "**/*${k}*" -iname "*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
     else
         # shellcheck disable=SC2207,SC2086
         filename_results=( $(find ${CHEATSHEETS_DIR} \( ${FIND_EXCLUDE} \) -o -iname "*${k}*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
+        # shellcheck disable=SC2207,SC2086
+        foldername_results=( $(find ${CHEATSHEETS_DIR} \( ${FIND_EXCLUDE} \) -o -path "**/*${k}*" -iname "*.chsht.*" -exec sh -c 'echo ${0#./}' {} \;) )
     fi
 
-    # index of the content's results
-    i=0
+    mapfile -t search_results < <(remove_array_dups "${content_results[@]}" "${foldername_results[@]}" "${filename_results[@]}")
 
     # for each file matched, increment its "score" in the global search
-    for r in "${content_results[@]}" "${filename_results[@]}"; do
-        # if keyword was found in both filename and file content,
-        # do not add it to the results
-        if [[ "$i" -lt "${#content_results[@]}" && "${filename_results[*]}" =~ ${r} ]]; then
-            i=$(( i + 1))
-            continue
-        fi
-
+    for r in "${search_results[@]}"; do
         # update the current result's score (file's score)
         if [[ ! -v results["${r}"] ]] ; then
             results["${r}"]=1
