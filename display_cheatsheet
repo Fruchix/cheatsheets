@@ -18,11 +18,13 @@ print_delimiter()
     print_hline "─" ${#filename}
 }
 
-filename="$@"
+filename="$1"
+toolname="$2"
+toolname=${toolname:="bat"}
 
 print_delimiter "${filename}"
 
-if [[ $(tput lines) -ge $(wc -l < "${filename}") ]]; then
+if [[ "${toolname}" == "bat" && $(tput lines) -ge $(wc -l < "${filename}") ]]; then
     bat --color=always "${filename}"
 else
     cat "${filename}"
