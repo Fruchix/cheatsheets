@@ -9,6 +9,6 @@ _cheatsheet_search "$@" | fzf --preview-window=right,50% --disabled --ansi \
     --bind='focus:change-preview(bat --color=always $(find ${CHEATSHEETS_DIR} -name {}))'\
     --bind='enter:become(display_cheatsheet $(find ${CHEATSHEETS_DIR} -name {}) cat)'\
     --bind='ctrl-p:become(display_cheatsheet $(find ${CHEATSHEETS_DIR} -name {}) bat)'\
-    --bind='ctrl-b:become([ -z ${INCLUDE_BASH_BIBLE+x} ] && export INCLUDE_BASH_BIBLE=yes || unset INCLUDE_BASH_BIBLE; cheatsheet {q})'     # toggles the search in bash bible
+    --bind='ctrl-b:become([ "${INCLUDE_BASH_BIBLE}" != "yes" ] && export INCLUDE_BASH_BIBLE=yes || unset INCLUDE_BASH_BIBLE; cheatsheet {q})'     # toggles the search in bash bible
 
 # ctrl-p: pretty print (bat)
