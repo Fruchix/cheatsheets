@@ -11,16 +11,28 @@ declare -A results
 # shellcheck disable=SC2162
 read -a keywords <<< "${1}"
 
-# check which files match each keyword and increment their score
-for k in "${keywords[@]}" ""; do
-    FIND_EXCLUDE=""
-    GREP_EXCLUDE=""
+FIND_EXCLUDE=""
+GREP_EXCLUDE=""
 
-    if [[ "${INCLUDE_BASH_BIBLE}" != "yes" ]]; then
-        FIND_EXCLUDE="${FIND_EXCLUDE} -path ${CHEATSHEETS_DIR}/bash-bible -prune"
-        GREP_EXCLUDE="${GREP_EXCLUDE} --exclude-dir=bash-bible"
+if [[ "${INCLUDE_BASH_BIBLE}" != "yes" ]]; then
+    FIND_EXCLUDE="${FIND_EXCLUDE} -path ${CHEATSHEETS_DIR}/bash-bible -prune"
+    GREP_EXCLUDE="${GREP_EXCLUDE} --exclude-dir=bash-bible"
+fi
+
+# print all cheatsheets when no keyword is provided
+if [[ "${#keywords}" -eq 0 ]]; then
+    if [[ -z "${FIND_EXCLUDE}" ]]; then
+        # shellcheck disable=SC2207,SC2086
+        find ${CHEATSHEETS_DIR} -iname "*.chsht.*" -exec sh -c 'basename ${0#./}' {} \;
+    else
+        # shellcheck disable=SC2207,SC2086
+        find ${CHEATSHEETS_DIR} \( ${FIND_EXCLUDE} \) -o -iname "*.chsht.*" -exec sh -c 'basename ${0#./}' {} \;
     fi
-    
+    exit 0
+fi
+
+# check which files match each keyword and increment their score
+for k in "${keywords[@]}" ; do    
     # search for keyword "k" in the "KEYWORDS" line of each cheatsheet
     # result: array of file names that matches this keyword
     # shellcheck disable=SC2207,SC2086
@@ -52,7 +64,7 @@ for k in "${keywords[@]}" ""; do
 
         # update the current result's score (file's score)
         if [[ ! -v results["${r}"] ]] ; then
-            results["${r}"]=0
+            results["${r}"]=1
         else
             results["${r}"]=$(( ${results["${r}"]} + 1 ))
         fi
@@ -69,7 +81,7 @@ for key in "${!results[@]}"; do
 done
 
 for key in "${!results[@]}"; do
-    if [[ ${results["${key}"]} -eq $max  ]]; then
+    if [[ ${results["${key}"]} -eq $max ]]; then
         basename "$key"
     fi
 done
