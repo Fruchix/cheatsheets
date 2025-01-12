@@ -7,8 +7,8 @@ export CHEATSHEETS_DIR
 _cheatsheet_search "$@" | fzf --preview-window=right,50% --disabled --ansi \
     --bind='change:reload(_cheatsheet_search {q})'\
     --bind='focus:change-preview(bat --color=always $(find ${CHEATSHEETS_DIR} -name {}))'\
-    --bind='enter:become(display_cheatsheet $(find ${CHEATSHEETS_DIR} -name {}) cat)'\
-    --bind='ctrl-p:become(display_cheatsheet $(find ${CHEATSHEETS_DIR} -name {}) bat)'\
+    --bind='enter:become(_cheatsheet_display $(find ${CHEATSHEETS_DIR} -name {}) cat)'\
+    --bind='ctrl-p:become(_cheatsheet_display $(find ${CHEATSHEETS_DIR} -name {}) bat)'\
     --bind='ctrl-b:become([ "${INCLUDE_BASH_BIBLE}" != "yes" ] && export INCLUDE_BASH_BIBLE=yes || unset INCLUDE_BASH_BIBLE; cheatsheet {q})'     # toggles the search in bash bible
 
 # ctrl-p: pretty print (bat)
