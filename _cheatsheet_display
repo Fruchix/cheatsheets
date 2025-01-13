@@ -29,5 +29,5 @@ if [[ "${toolname}" == "bat" && $(tput lines) -ge $(wc -l < "${filename}") ]]; t
 else
     cat "${filename}"
 fi
-
+echo
 print_delimiter "${filename}"

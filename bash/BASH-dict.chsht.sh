@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# KEYWORDS: dict dictionary iterate print array associative index
+# KEYWORDS: dict dictionary iterate print array associative index key value
 
 # array MUST be declare as associative using declare -A
 declare -A my_array
