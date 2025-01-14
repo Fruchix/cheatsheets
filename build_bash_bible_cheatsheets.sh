@@ -56,6 +56,7 @@ main() {
             if [[ $line =~ ^"## " ]]; then
                 # if pandoc is installed, convert the last cheatsheet (before this new title) to text (from markdown)
                 if [[ $(command -v pandoc) && -n ${output} ]]; then
+                    echo >> "${bash_bible_dir}/${chapter_title}/${output}.tmp"
                     pandoc -f markdown -t plain "${bash_bible_dir}/${chapter_title}/${output}.tmp" -o "${bash_bible_dir}/${chapter_title}/BASH-${output}.chsht.sh" && {
                         echo "Added ${bash_bible_dir}/${chapter_title}/BASH-${output}.chsht.sh"
                     }
