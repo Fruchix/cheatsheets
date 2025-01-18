@@ -1,6 +1,6 @@
 # cheatsheets
 
-> A CLI bash tool that lets you navigate through your cheatsheets using fzf.
+> A CLI bash tool that lets you navigate through your cheatsheets using fzf
 
 After adding this directory to your path, you'll be able to call `cheasheets` from your terminal and search through this list of cheatsheets. You can use multiple keywords, that will be searched in the subfolders name, the file names and the `KEYWORDS` line of each cheatsheet.
 
@@ -64,10 +64,29 @@ An example of a valid cheatsheet:
 # REFERENCES:
 # https://www.w3schools.com/python/python_lists.asp
 # https://www.codecademy.com/learn/dacp-python-fundamentals/modules/dscp-python-lists/cheatsheet
+# https://github.com/ostwalprasad/PythonListSlicingCheatsheet
 # 
 # this comment is still part of the "REFERENCES" paragraph
 
 # this comment is not part of the "REFERENCES" paragraph
+
+# Example taken from https://github.com/ostwalprasad/PythonListSlicingCheatsheet
+# list[:]             >> All
+# list[Low:]          >> Low to End
+# list[:High]         >> Begining to High
+# list[Low:High]      >> Low to High
+# list[::Step]        >> Start to End with Step
+# list[Low::Step]     >> Low to End with Step
+# list[:High:Step]    >> Start to High with Step
+# list[Low:High:Step] >> Low to High with Step
+
+mylist = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+mylist[-12:3]   # ['A', 'B', 'C']
+mylist[::2]     # ['A', 'C', 'E', 'G', 'I']
+mylist[::-1]    # ['I', 'H', 'G', 'F', 'E', 'D', 'C', 'B', 'A']
+
+
+[...]
 ```
 
 ## Bash Bible Cheatsheets
@@ -76,7 +95,7 @@ The `pure bash bible` is an archived collection of pure bash alternatives to ext
 
 > https://github.com/dylanaraps/pure-bash-bible
 
-The script `build_bash_bible_cheatsheets.sh` parses the pure bash bible into cheathsheets, all stored into the `bash-bible` directory. This directory is not included in the search by default, but can be included by pressing `ctrl-b`.
+The script `build_bash_bible_cheatsheets.sh` parses the pure bash bible into cheatsheets, all stored into the `bash-bible` directory. This directory is not included in the search by default, but can be included by pressing `ctrl-b`.
 
 A known limitation is that there is no custom `KEYWORDS` line for each file, meaning that `cheatsheets` will only search in the folder and file names.
 
