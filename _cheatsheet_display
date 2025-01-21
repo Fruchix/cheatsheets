@@ -4,7 +4,7 @@ print_hline()
 {
     local char="$1" times="$2"
 
-    for ((i=0;i<=times;i++)); do 
+    for ((i=0;i<times;i++)); do
         echo -n "${char}"
     done
     echo
@@ -21,13 +21,26 @@ print_delimiter()
 filename="$1"
 toolname="$2"
 toolname=${toolname:="bat"}
+display="$3"
+display=${display:="preview"}
 
-print_delimiter "${filename}"
-
-if [[ "${toolname}" == "bat" && $(tput lines) -ge $(wc -l < "${filename}") ]]; then
-    bat --color=always "${filename}"
+if command -v bat; then
+    BAT="bat --color=always"
 else
-    cat "${filename}"
+    BAT="cat"
 fi
-print_delimiter "${filename}"
 
+if [[ "${display}" == "preview" ]]; then
+    ${BAT} "${filename}"
+    exit 0
+fi
+
+if [[ "${display}" == "terminal" ]]; then
+    if [[ "${toolname}" == "bat" && $(tput lines) -ge $(wc -l < "${filename}") ]]; then
+        ${BAT} --color=always "${filename}"
+    else
+        print_delimiter "${filename}"
+        cat "${filename}"
+        print_delimiter "${filename}"
+    fi
+fi
