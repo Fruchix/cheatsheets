@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 remove_array_dups() {
     # Usage: remove_array_dups "array"
