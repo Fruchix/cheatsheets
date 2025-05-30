@@ -14,7 +14,7 @@
  * limitations under the License.                                           *
  ****************************************************************************/
 
-// KEYWORDS: universal generic void pointers address arithmetic assign
+// KEYWORDS: universal generic void pointer address arithmetic assign uintptr ptr
 
 // Universal pointer: (void *), which should be of size 64 bits on majority of architectures
 
