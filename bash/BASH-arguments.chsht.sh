@@ -41,6 +41,16 @@ while [[ $# -gt 0 ]]; do
             # current $opt contains the value
             VALUE="${opt#*=}"
             ;;
+        "-g"|"--gnu-value="* )
+            local value
+            if [[ ${#opt} -eq 2 ]]; then
+                value="$1"
+                shift
+            else
+                value="${opt#*=}"
+            fi
+            VALUE=$value
+            ;;
         "-d"|"--doesnt_require_value" )
             MODE=1
             ;;
