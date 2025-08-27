@@ -27,7 +27,7 @@ DISPLAY_PREVIEW="cat"
 DISPLAY_TERMINAL="cat"
 
 if command -v bat &> /dev/null; then
-    DISPLAY_PREVIEW="command bat --color=always"
+    DISPLAY_PREVIEW="command bat -p --color=always"
     DISPLAY_TERMINAL="command bat -pp --color=always"
 fi
 
