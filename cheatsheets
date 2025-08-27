@@ -6,9 +6,7 @@ export CHEATSHEETS_DIR
 # shellcheck disable=SC2016
 _cheatsheet_search "$@" | fzf --preview-window=right,50% --disabled --ansi \
     --bind='change:reload(_cheatsheet_search {q})'\
-    --bind='focus:change-preview(_cheatsheet_display $(find ${CHEATSHEETS_DIR} -name {}) bat)'\
-    --bind='enter:become(_cheatsheet_display $(find ${CHEATSHEETS_DIR} -name {}) cat terminal)'\
-    --bind='ctrl-p:become(_cheatsheet_display $(find ${CHEATSHEETS_DIR} -name {}) bat terminal)'\
+    --bind='focus:change-preview(_cheatsheet_display $(find ${CHEATSHEETS_DIR} -name {}))'\
+    --bind='enter:become(_cheatsheet_display $(find ${CHEATSHEETS_DIR} -name {}) terminal)'\
     --bind='ctrl-b:become([ "${INCLUDE_BASH_BIBLE}" != "yes" ] && export INCLUDE_BASH_BIBLE=yes || unset INCLUDE_BASH_BIBLE; cheatsheets {q})'     # toggles the search in bash bible
 
-# ctrl-p: pretty print (bat)

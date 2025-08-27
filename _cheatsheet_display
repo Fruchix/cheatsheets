@@ -12,35 +12,39 @@ print_hline()
 
 print_delimiter()
 {
+    echo $COLUMNS >> log.log
     local filename="$1"
-    print_hline "─" ${#filename}
-    echo "${filename}"
-    print_hline "─" ${#filename}
+    print_hline "─" $(tput columns)
+    echo "Cheatsheet: ${filename}"
+    print_hline "─" $(tput columns)
 }
 
 filename="$1"
-toolname="$2"
-toolname=${toolname:="bat"}
-display="$3"
+display="$2"
 display=${display:="preview"}
 
-if command -v bat; then
-    BAT="bat --color=always"
-else
-    BAT="cat"
+DISPLAY_PREVIEW="cat"
+DISPLAY_TERMINAL="cat"
+
+if command -v bat &> /dev/null; then
+    DISPLAY_PREVIEW="command bat --color=always"
+    DISPLAY_TERMINAL="command bat -pp --color=always"
 fi
 
 if [[ "${display}" == "preview" ]]; then
-    ${BAT} "${filename}"
+    ${DISPLAY_PREVIEW} "${filename}"
     exit 0
 fi
 
 if [[ "${display}" == "terminal" ]]; then
-    if [[ "${toolname}" == "bat" && $(tput lines) -ge $(wc -l < "${filename}") ]]; then
-        ${BAT} --color=always "${filename}"
-    else
-        print_delimiter "${filename}"
-        cat "${filename}"
-        print_delimiter "${filename}"
-    fi
+    print_delimiter $(basename "${filename}")
+    ${DISPLAY_TERMINAL} "${filename}"
+    print_delimiter $(basename "${filename}")
+    # if [[ "${toolname}" == "bat" && $(tput lines) -ge $(wc -l < "${filename}") ]]; then
+    #     ${CAT} --color=always "${filename}"
+    # else
+    #     print_delimiter "${filename}"
+    #     cat "${filename}"
+    #     print_delimiter "${filename}"
+    # fi
 fi
