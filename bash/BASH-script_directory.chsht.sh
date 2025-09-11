@@ -18,5 +18,20 @@
 
 # KEYWORDS: script directory current locate location
 
+# bash
 script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+# zsh
+script_dir=$( cd -- "$( dirname -- "${(%):-%N}" )" && pwd )
+
+
+# in a script that can be sourced or either executed by zsh and bash
+if [ -n "${BASH_SOURCE:-}" ]; then
+  # Bash
+  script_path="${BASH_SOURCE[0]}"
+elif [ -n "${ZSH_VERSION:-}" ]; then
+  # zsh
+  script_path="${(%):-%N}"
+fi
+script_dir=$( cd -- "$( dirname -- "$script_path" )" && pwd )
 
