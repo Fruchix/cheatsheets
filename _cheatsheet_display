@@ -12,7 +12,6 @@ print_hline()
 
 print_delimiter()
 {
-    echo $COLUMNS >> log.log
     local filename="$1"
     print_hline "─" $(tput columns)
     echo "Cheatsheet: ${filename}"
